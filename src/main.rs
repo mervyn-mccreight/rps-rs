@@ -1,3 +1,9 @@
+use crate::gesture::{CanChallenge, Gesture};
+
+mod gesture;
+
 fn main() {
-    println!("Hello, world!");
+    let one = Gesture::Paper;
+    let two = Gesture::Scissors;
+    println! {"{:?} plays against {:?} and win={:?}", one, two, one.wins_against(two)};
 }
