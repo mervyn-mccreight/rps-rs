@@ -34,12 +34,10 @@ fn play_round(
 
     if contender_gesture == opponent_gesture {
         RoundResult::Draw
+    } else if contender_gesture.wins_against(opponent_gesture) {
+        RoundResult::ContenderWin
     } else {
-        if contender_gesture.wins_against(opponent_gesture) {
-            RoundResult::ContenderWin
-        } else {
-            RoundResult::OpponentWin
-        }
+        RoundResult::OpponentWin
     }
 }
 
