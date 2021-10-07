@@ -32,7 +32,7 @@ fn play_round(
         .next()
         .expect("Player unexpectedly stopped to choose a gesture.");
 
-    return if contender_gesture == opponent_gesture {
+    if contender_gesture == opponent_gesture {
         RoundResult::Draw
     } else {
         if contender_gesture.wins_against(opponent_gesture) {
@@ -40,7 +40,7 @@ fn play_round(
         } else {
             RoundResult::OpponentWin
         }
-    };
+    }
 }
 
 #[derive(Clone)]
