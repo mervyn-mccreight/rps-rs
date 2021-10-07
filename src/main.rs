@@ -1,5 +1,6 @@
 use crate::gesture::{CanChallenge, Gesture};
 use std::fmt::Display;
+use std::iter::repeat_with;
 
 mod gesture;
 
@@ -10,7 +11,7 @@ fn main() {
 
 // TODO: Write tests.
 fn play_simulation() -> SimulationResult {
-    let rock_player = || Gesture::Rock;
+    let rock_player = repeat_with(|| Gesture::Rock);
     let round_results = (0..100).map(|_| play_round(rock_player, rock_player));
     SimulationResult {
         round_results: round_results.collect(),
@@ -18,9 +19,18 @@ fn play_simulation() -> SimulationResult {
 }
 
 // TODO: write tests.
-fn play_round(contender: impl Fn() -> Gesture, opponent: impl Fn() -> Gesture) -> RoundResult {
-    let contender_gesture = contender();
-    let opponent_gesture = opponent();
+fn play_round(
+    contender: impl IntoIterator<Item = Gesture>,
+    opponent: impl IntoIterator<Item = Gesture>,
+) -> RoundResult {
+    let contender_gesture = contender
+        .into_iter()
+        .next()
+        .expect("Player unexpectedly stopped to choose a gesture.");
+    let opponent_gesture = opponent
+        .into_iter()
+        .next()
+        .expect("Player unexpectedly stopped to choose a gesture.");
 
     return if contender_gesture == opponent_gesture {
         RoundResult::Draw
