@@ -14,7 +14,6 @@ fn main() {
     println!("{}", result);
 }
 
-// TODO: Write tests.
 fn play_simulation() -> SimulationResult {
     let rock_player = repeat_with(|| Gesture::Rock);
     let rng = thread_rng();
@@ -28,7 +27,6 @@ fn play_simulation() -> SimulationResult {
     }
 }
 
-// TODO: write tests.
 fn play_round(
     contender: impl IntoIterator<Item = Gesture>,
     opponent: impl IntoIterator<Item = Gesture>,
@@ -89,7 +87,7 @@ impl Display for SimulationResult {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq)]
 enum RoundResult {
     ContenderWin,
     OpponentWin,
@@ -130,6 +128,54 @@ mod tests {
         fn should_print_a_result_with_mixed_results() {
             let display = format! {"{}", SimulationResult { round_results: vec![RoundResult::ContenderWin, RoundResult::Draw, RoundResult::OpponentWin] }};
             assert_eq! {display, "Wins=1, Draws=1, Losses=1"}
+        }
+    }
+
+    mod play_round {
+        use super::*;
+
+        #[test]
+        fn should_return_draw() {
+            let scissors_player = repeat_with(|| Gesture::Scissors);
+            assert_eq!(
+                play_round(scissors_player, scissors_player),
+                RoundResult::Draw
+            );
+        }
+
+        #[test]
+        fn should_return_win() {
+            let scissors_player = repeat_with(|| Gesture::Scissors);
+            let paper_player = repeat_with(|| Gesture::Paper);
+
+            assert_eq!(
+                play_round(scissors_player, paper_player),
+                RoundResult::ContenderWin
+            );
+        }
+
+        #[test]
+        fn should_return_loss() {
+            let scissors_player = repeat_with(|| Gesture::Scissors);
+            let rock_player = repeat_with(|| Gesture::Rock);
+
+            assert_eq!(
+                play_round(scissors_player, rock_player),
+                RoundResult::OpponentWin
+            );
+        }
+
+        #[test]
+        fn should_work_multiple_times() {
+            let scissors_player = repeat_with(|| Gesture::Scissors);
+            assert_eq!(
+                play_round(scissors_player, scissors_player),
+                RoundResult::Draw
+            );
+            assert_eq!(
+                play_round(scissors_player, scissors_player),
+                RoundResult::Draw
+            );
         }
     }
 }
