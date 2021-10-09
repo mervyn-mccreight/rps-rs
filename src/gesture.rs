@@ -29,7 +29,7 @@ impl CanChallenge for Gesture {
 
 pub struct UniformGesture(Uniform<i8>);
 
-// TODO: Test this.
+// TODO: Test that the uniform gives values as expected.
 impl UniformSampler for UniformGesture {
     type X = Gesture;
 
@@ -79,5 +79,27 @@ mod tests {
     #[test_case(Gesture::Scissors, Gesture::Rock => false; "Scissors lose against rock")]
     fn wins_against_rules_test(one: Gesture, two: Gesture) -> bool {
         one.wins_against(two)
+    }
+
+    mod uniform {
+        use super::*;
+
+        #[test]
+        #[should_panic(expected = "Uniform::new called with `low >= high`")]
+        fn new_should_panic_if_lower_bound_is_greater_than_higher_bound() {
+            Uniform::new(Gesture::Paper, Gesture::Rock);
+        }
+
+        #[test]
+        #[should_panic(expected = "Uniform::new called with `low >= high`")]
+        fn new_should_panic_if_lower_bound_is_equal_to_higher_bound() {
+            Uniform::new(Gesture::Paper, Gesture::Paper);
+        }
+
+        #[test]
+        #[should_panic(expected = "Uniform::new_inclusive called with `low > high`")]
+        fn new_inclusive_should_panic_if_lower_bound_is_greater_than_higher_bound() {
+            Uniform::new_inclusive(Gesture::Paper, Gesture::Rock);
+        }
     }
 }
