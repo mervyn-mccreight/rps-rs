@@ -1,4 +1,12 @@
-#[derive(PartialEq, Debug, Copy, Clone)]
+use crate::Rng;
+use enum_ordinalize::Ordinalize;
+use rand::distributions::uniform::SampleBorrow;
+use rand::distributions::uniform::SampleUniform;
+use rand::distributions::uniform::UniformSampler;
+use rand::distributions::Distribution;
+use rand::distributions::Uniform;
+
+#[derive(Ordinalize, PartialEq, Debug, Copy, Clone)]
 pub enum Gesture {
     Rock,
     Paper,
@@ -17,6 +25,44 @@ impl CanChallenge for Gesture {
             Gesture::Rock => other == Gesture::Scissors,
         }
     }
+}
+
+pub struct UniformGesture(Uniform<i8>);
+
+// TODO: Test this.
+impl UniformSampler for UniformGesture {
+    type X = Gesture;
+
+    fn new<B1, B2>(low: B1, high: B2) -> Self
+    where
+        B1: SampleBorrow<Self::X> + Sized,
+        B2: SampleBorrow<Self::X> + Sized,
+    {
+        UniformGesture(Uniform::new(
+            low.borrow().ordinal(),
+            high.borrow().ordinal(),
+        ))
+    }
+
+    fn new_inclusive<B1, B2>(low: B1, high: B2) -> Self
+    where
+        B1: SampleBorrow<Self::X> + Sized,
+        B2: SampleBorrow<Self::X> + Sized,
+    {
+        UniformGesture(Uniform::new_inclusive(
+            low.borrow().ordinal(),
+            high.borrow().ordinal(),
+        ))
+    }
+
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Self::X {
+        Gesture::from_ordinal(self.0.sample(rng))
+            .expect("Underlying Uniform gave an value out of range.")
+    }
+}
+
+impl SampleUniform for Gesture {
+    type Sampler = UniformGesture;
 }
 
 #[cfg(test)]

@@ -1,4 +1,6 @@
+extern crate enum_ordinalize;
 extern crate rand;
+
 use crate::gesture::{CanChallenge, Gesture};
 use crate::rand::distributions::Uniform;
 use crate::rand::{thread_rng, Rng};
@@ -16,8 +18,8 @@ fn main() {
 fn play_simulation() -> SimulationResult {
     let rock_player = repeat_with(|| Gesture::Rock);
     let rng = thread_rng();
-    // TODO: Make Gesture support Uniform directly, would be more elegant.
-    let choices = Uniform::new_inclusive(0, 2);
+
+    let choices = Uniform::new_inclusive(Gesture::Rock, Gesture::Scissors);
     let mut random_player = rng.sample_iter(choices);
 
     let round_results = (0..100).map(|_| play_round(rock_player, &mut random_player));
@@ -29,8 +31,7 @@ fn play_simulation() -> SimulationResult {
 // TODO: write tests.
 fn play_round(
     contender: impl IntoIterator<Item = Gesture>,
-    // TODO: this is a work-around. make this an IntoIterator<Item = Gesture> to match the general player type
-    opponent: impl IntoIterator<Item = i32>,
+    opponent: impl IntoIterator<Item = Gesture>,
 ) -> RoundResult {
     let contender_gesture = contender
         .into_iter()
@@ -38,11 +39,6 @@ fn play_round(
         .expect("Player unexpectedly stopped to choose a gesture.");
     let opponent_gesture = opponent
         .into_iter()
-        .map(|e| match e {
-            0 => Gesture::Paper,
-            1 => Gesture::Rock,
-            _ => Gesture::Scissors,
-        })
         .next()
         .expect("Player unexpectedly stopped to choose a gesture.");
 
