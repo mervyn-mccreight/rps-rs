@@ -16,18 +16,18 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "enum-ordinalize"
-version = "4.1.2"
+version = "4.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb2f6f8d9dc9666f16c5d52e7d19f7c8bb58fc09608c1930abd5f436da555a3b"
+checksum = "b365ed566a2be6c61cb68e4faca9e74687004c5fd9a7291be8bc30992dd9195c"
 dependencies = [
  "enum-ordinalize-derive",
 ]
 
 [[package]]
 name = "enum-ordinalize-derive"
-version = "4.1.0"
+version = "4.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82e8833b6e950fda9059436d025eca4b6d8eb029b0f1c2ac8f1ec27300dba5fa"
+checksum = "9ac2fa9cc04a3dec245e68a29ac309a03c1fe638522b0d8c24ec14bbe9c08323"
 dependencies = [
  "num-bigint",
  "num-traits",
