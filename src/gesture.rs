@@ -1,10 +1,10 @@
 use crate::Rng;
 use enum_ordinalize::Ordinalize;
+use rand::distributions::Distribution;
+use rand::distributions::Uniform;
 use rand::distributions::uniform::SampleBorrow;
 use rand::distributions::uniform::SampleUniform;
 use rand::distributions::uniform::UniformSampler;
-use rand::distributions::Distribution;
-use rand::distributions::Uniform;
 
 #[derive(Ordinalize, PartialEq, Debug, Copy, Clone)]
 pub enum Gesture {

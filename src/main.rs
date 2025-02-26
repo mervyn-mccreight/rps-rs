@@ -3,7 +3,7 @@ extern crate rand;
 
 use crate::gesture::{CanChallenge, Gesture};
 use crate::rand::distributions::Uniform;
-use crate::rand::{thread_rng, Rng};
+use crate::rand::{Rng, thread_rng};
 use std::fmt::Display;
 use std::iter::repeat_with;
 
