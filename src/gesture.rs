@@ -1,8 +1,12 @@
 use std::cmp::Ordering;
 
-use enum_ordinalize::Ordinalize;
+use rand::{
+    RngExt,
+    distr::{Distribution, StandardUniform},
+};
+use strum::{EnumCount, FromRepr};
 
-#[derive(Ordinalize, PartialEq, Debug, Copy, Clone)]
+#[derive(EnumCount, PartialEq, Debug, Copy, Clone, FromRepr)]
 pub enum Gesture {
     Rock,
     Paper,
@@ -28,6 +32,13 @@ impl CanChallenge for Gesture {
     }
 }
 
+impl Distribution<Gesture> for StandardUniform {
+    fn sample<R: rand::prelude::Rng + ?Sized>(&self, rng: &mut R) -> Gesture {
+        let index = rng.random_range(0..Gesture::COUNT);
+        Gesture::from_repr(index).unwrap_or(Gesture::Rock)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use test_case::test_case;
@@ -45,5 +56,18 @@ mod tests {
     #[test_case(Gesture::Scissors, Gesture::Scissors => Ordering::Equal; "Scissors draws against scissors")]
     fn challenge_rules_test(one: Gesture, two: Gesture) -> Ordering {
         one.challenge(&two)
+    }
+
+    #[test]
+    fn distribution_test() {
+        let mut rng: rand::rngs::StdRng = rand::make_rng();
+        for _ in 0..100 {
+            let random_gesture: Gesture = rng.random();
+            assert!(
+                random_gesture == Gesture::Scissors
+                    || random_gesture == Gesture::Rock
+                    || random_gesture == Gesture::Paper
+            )
+        }
     }
 }

@@ -1,11 +1,6 @@
-extern crate enum_ordinalize;
-extern crate rand;
-
-use enum_ordinalize::Ordinalize;
-use rand::seq::IteratorRandom;
-
 use crate::gesture::{CanChallenge, Gesture};
-use crate::rand::rng;
+use rand::RngExt;
+use rand::rng;
 use std::cmp::Ordering;
 use std::fmt::Display;
 use std::iter::{repeat, repeat_with};
@@ -19,18 +14,8 @@ fn main() {
 
 fn play_simulation() -> SimulationResult {
     let mut rng = rng();
-    let round_results = (0..100).map(|_| {
-        play_round(
-            repeat(Gesture::Rock),
-            repeat_with(|| {
-                Gesture::VARIANTS
-                    .iter()
-                    .choose(&mut rng)
-                    .unwrap()
-                    .to_owned()
-            }),
-        )
-    });
+    let round_results =
+        (0..100).map(|_| play_round(repeat(Gesture::Rock), repeat_with(|| rng.random())));
     SimulationResult {
         round_results: round_results.collect(),
     }
