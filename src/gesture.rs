@@ -6,7 +6,7 @@ use rand::{
 };
 use strum::{EnumCount, FromRepr};
 
-#[derive(EnumCount, PartialEq, Debug, Copy, Clone, FromRepr)]
+#[derive(EnumCount, PartialEq, Eq, Debug, Copy, Clone, FromRepr)]
 pub enum Gesture {
     Rock,
     Paper,
@@ -14,19 +14,19 @@ pub enum Gesture {
 }
 
 pub trait CanChallenge {
-    fn challenge(&self, other: &Gesture) -> Ordering;
+    fn challenge(&self, other: Gesture) -> Ordering;
 }
 
 impl CanChallenge for Gesture {
-    fn challenge(&self, other: &Gesture) -> Ordering {
-        if self == other {
+    fn challenge(&self, other: Gesture) -> Ordering {
+        if *self == other {
             return Ordering::Equal;
         }
 
         match (self, other) {
-            (Gesture::Rock, Gesture::Scissors) => Ordering::Greater,
-            (Gesture::Paper, Gesture::Rock) => Ordering::Greater,
-            (Gesture::Scissors, Gesture::Paper) => Ordering::Greater,
+            (Self::Rock, Self::Scissors)
+            | (Self::Paper, Self::Rock)
+            | (Self::Scissors, Self::Paper) => Ordering::Greater,
             _ => Ordering::Less,
         }
     }
@@ -55,7 +55,7 @@ mod tests {
     #[test_case(Gesture::Scissors, Gesture::Rock => Ordering::Less; "Scissors lose against rock")]
     #[test_case(Gesture::Scissors, Gesture::Scissors => Ordering::Equal; "Scissors draws against scissors")]
     fn challenge_rules_test(one: Gesture, two: Gesture) -> Ordering {
-        one.challenge(&two)
+        one.challenge(two)
     }
 
     #[test]
@@ -67,7 +67,7 @@ mod tests {
                 random_gesture == Gesture::Scissors
                     || random_gesture == Gesture::Rock
                     || random_gesture == Gesture::Paper
-            )
+            );
         }
     }
 }
