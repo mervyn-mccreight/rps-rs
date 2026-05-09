@@ -6,6 +6,7 @@ use rand::seq::IteratorRandom;
 
 use crate::gesture::{CanChallenge, Gesture};
 use crate::rand::rng;
+use std::cmp::Ordering;
 use std::fmt::Display;
 use std::iter::{repeat, repeat_with};
 
@@ -48,12 +49,10 @@ fn play_round(
         .next()
         .expect("Player unexpectedly stopped to choose a gesture.");
 
-    if contender_gesture == opponent_gesture {
-        RoundResult::Draw
-    } else if contender_gesture.wins_against(opponent_gesture) {
-        RoundResult::ContenderWin
-    } else {
-        RoundResult::OpponentWin
+    match contender_gesture.challenge(&opponent_gesture) {
+        Ordering::Equal => RoundResult::Draw,
+        Ordering::Greater => RoundResult::ContenderWin,
+        Ordering::Less => RoundResult::OpponentWin,
     }
 }
 
