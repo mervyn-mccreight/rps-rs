@@ -9,6 +9,7 @@
 
 use crate::gesture::{CanChallenge, Gesture};
 use crate::player::Player;
+use crate::score::Score;
 use rand::RngExt;
 use rand::rng;
 use std::cmp::Ordering;
@@ -16,6 +17,7 @@ use std::fmt::Display;
 
 mod gesture;
 mod player;
+mod score;
 
 fn main() {
     let result = play_simulation();
@@ -50,33 +52,11 @@ struct SimulationResult {
 
 impl Display for SimulationResult {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let wins: u8 = self
-            .round_results
-            .clone()
-            .into_iter()
-            .filter_map(|r| match r {
-                RoundResult::ContenderWin => Some(1),
-                _ => None,
-            })
-            .sum();
-        let draws: u8 = self
-            .round_results
-            .clone()
-            .into_iter()
-            .filter_map(|r| match r {
-                RoundResult::Draw => Some(1),
-                _ => None,
-            })
-            .sum();
-        let losses: u8 = self
-            .round_results
-            .clone()
-            .into_iter()
-            .filter_map(|r| match r {
-                RoundResult::OpponentWin => Some(1),
-                _ => None,
-            })
-            .sum();
+        let Score {
+            wins,
+            draws,
+            losses,
+        } = self.round_results.iter().map(Score::from).sum();
         write!(f, "Wins={wins}, Draws={draws}, Losses={losses}")
     }
 }
